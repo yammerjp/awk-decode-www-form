@@ -1,0 +1,1 @@
+%23+awk-decode-www-form%0A%0AAWK+implementation+of+decode_www_form%28%29%0A%0A%28input+string+must+be+UTF-8%29%0A%0A%23%23+requirements%0A%0AGNU+Awk%0A%0A%23%23+Usage%0A%0A%60%60%60shell%0A%24+cat+README.md+%7C+ruby+encode.rb+%7C+gawk+-f+awk-decode-www-form.awk+-f+sample.awk%0A%60%60%60%0A
