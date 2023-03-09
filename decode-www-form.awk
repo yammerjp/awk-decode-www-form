@@ -27,7 +27,7 @@ function decode_www_form(encoded_str,    encoded_parts, key, value, equal_index)
   }
 }
 
-function decode_utf8_parcent_encoding(encoded_str,    chars, decoded_str, L, N, num, utf16num) {
+function decode_utf8_parcent_encoding(encoded_str,    chars, decoded_str, L, N, num, utf32num) {
   L = length(encoded_str)
   N = 1
   decoded_str = ""
@@ -43,28 +43,28 @@ function decode_utf8_parcent_encoding(encoded_str,    chars, decoded_str, L, N, 
     if (chars[N+1] ~ /^[0-7]$/ ) {
       # 0xxxxxxx
       num = strtonum("0x" chars[N+1] chars[N+2])
-      utf16num = num
+      utf32num = num
       N+=3
     } else if (chars[N+1] ~ /^[c-dC-D]$/ && chars[N+3] = "%") {
       # 110xxxxx 10xxxxxx
       num = strtonum("0x" chars[N+1] chars[N+2] chars[N+4] chars[N+5])
-      utf16num = (((num - (num % 256)) / 256) % 32) * 64 + (num % 64)
+      utf32num = (((num - (num % 256)) / 256) % 32) * 64 + (num % 64)
       N+=6
     } else if (chars[N+1] ~ /^[eE]$/ && chars[N+3] == "%" && chars[N+6] == "%") {
       # 1110xxxx 10xxxxxx 10xxxxxx
       num = strtonum("0x" chars[N+1] chars[N+2] chars[N+4] chars[N+5] chars[N+7] chars[N+8])
-      utf16num = (((num - (num % 65536)) / 65536) % 16) * 4096 + (((num - (num % 256)) / 256) % 64) * 64 + (num % 64);
+      utf32num = (((num - (num % 65536)) / 65536) % 16) * 4096 + (((num - (num % 256)) / 256) % 64) * 64 + (num % 64);
       N+=9
     } else if (chars[N+1] ~ /^[fF]$/ && chars[N+3] == "%" && chars[N+6] == "%" && chars[N+9] == "%") {
       # 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
       num = strtonum("0x" chars[N+1] chars[N+2] chars[N+4] chars[N+5] chars[N+7] chars[N+8] chars[N+10] chars[N+11])
-      utf16num = (((num - (num % 16777216))/ 16777216) % 8) * 262144 + (((num - (num % 65536)) / 65536) % 64) * 4096 + (((num - (num % 256)) / 256) % 64) * 64 + (num % 64)
+      utf32num = (((num - (num % 16777216))/ 16777216) % 8) * 262144 + (((num - (num % 65536)) / 65536) % 64) * 4096 + (((num - (num % 256)) / 256) % 64) * 64 + (num % 64)
       N+=12
     } else {
       print "failed"
       exit
     }
-    decoded_str = sprintf("%s%c", decoded_str, utf16num)
+    decoded_str = sprintf("%s%c", decoded_str, utf32num)
   }
   return decoded_str
 }
